@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" fill="#FFF3E0" />
+    
+    <!-- Main Elements -->
+    <g transform="translate(100, 100)">
+        <!-- Leaf -->
+        <path d="M0,-40 C20,-40 40,-20 40,0 C40,20 20,40 0,40 C-20,40 -40,20 -40,0 C-40,-20 -20,-40 0,-40" 
+              fill="#FFA726" stroke="#F57C00" stroke-width="2">
+            <animate attributeName="d" 
+                     values="M0,-40 C20,-40 40,-20 40,0 C40,20 20,40 0,40 C-20,40 -40,20 -40,0 C-40,-20 -20,-40 0,-40;
+                            M0,-35 C15,-35 35,-15 35,0 C35,15 15,35 0,35 C-15,35 -35,15 -35,0 C-35,-15 -15,-35 0,-35;
+                            M0,-40 C20,-40 40,-20 40,0 C40,20 20,40 0,40 C-20,40 -40,20 -40,0 C-40,-20 -20,-40 0,-40"
+                     dur="3s" repeatCount="indefinite" />
+        </path>
+        
+        <!-- Medicine Bottle -->
+        <g transform="translate(0, 0)">
+            <!-- Bottle Body -->
+            <path d="M-15,-30 L15,-30 L20,-20 L-20,-20 Z" fill="#FFB74D" stroke="#F57C00" stroke-width="2" />
+            <rect x="-15" y="-20" width="30" height="40" rx="5" fill="#FFB74D" stroke="#F57C00" stroke-width="2" />
+            
+            <!-- Liquid -->
+            <rect x="-12" y="-15" width="24" height="30" rx="3" fill="#FFE0B2">
+                <animate attributeName="height" values="30;25;30" dur="2s" repeatCount="indefinite" />
+            </rect>
+            
+            <!-- Label -->
+            <rect x="-10" y="-5" width="20" height="15" rx="2" fill="#FFF3E0" stroke="#F57C00" stroke-width="1" />
+            <line x1="-8" y1="0" x2="8" y2="0" stroke="#F57C00" stroke-width="1">
+                <animate attributeName="stroke-dasharray" from="0,20" to="20,0" dur="1s" repeatCount="indefinite" />
+            </line>
+        </g>
+        
+        <!-- Sparkles -->
+        <g>
+            <circle cx="-30" cy="-30" r="2" fill="#FFA726">
+                <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="30" cy="-30" r="2" fill="#FFA726">
+                <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="0" cy="-40" r="2" fill="#FFA726">
+                <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" />
+            </circle>
+        </g>
+        
+        <!-- Pulse Rings -->
+        <circle cx="0" cy="0" r="5" fill="none" stroke="#FFA726" stroke-width="2">
+            <animate attributeName="r" from="5" to="30" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="1" to="0" dur="2s" repeatCount="indefinite" />
+        </circle>
+    </g>
+</svg> 

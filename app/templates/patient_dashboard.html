@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>Welcome, {{ patient.name }}</h2>
+        <p class="text-muted">Your Doctor: {{ patient.doctor.name if patient.doctor else 'Not assigned' }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Personal Information -->
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h4>Personal Information</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Age:</strong> {{ patient.age }}</p>
+                <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                <p><strong>Contact:</strong> {{ patient.contact }}</p>
+                <p><strong>Address:</strong> {{ patient.address }}</p>
+                <p><strong>Email:</strong> {{ patient.email or 'Not set' }}</p>
+                <p><strong>Premium Status:</strong> {{ 'Active' if patient.is_premium else 'Inactive' }}</p>
+                <a href="{{ url_for('patient.update_profile') }}" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="fas fa-edit"></i> Update Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h4>Prescriptions</h4>
+            </div>
+            <div class="card-body">
+                {% if prescriptions or follow_ups %}
+                    <div class="list-group">
+                        {% for prescription in prescriptions %}
+                        <div class="list-group-item">
+                            <h6 class="mb-1">{{ prescription.medication }}</h6>
+                            <p class="mb-1"><small>Dosage: {{ prescription.dosage }}</small></p>
+                            <p class="mb-1"><small>Instructions: {{ prescription.instructions }}</small></p>
+                            <small class="text-muted">Date: {{ prescription.date.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        {% endfor %}
+                        
+                        {% for follow_up in follow_ups %}
+                            {% if follow_up.medicines %}
+                                {% for medicine in follow_up.medicines %}
+                                <div class="list-group-item">
+                                    <h6 class="mb-1">{{ medicine.name }}</h6>
+                                    <p class="mb-1"><small>Dosage: {{ medicine.dosage }}</small></p>
+                                    {% if medicine.notes %}
+                                    <p class="mb-1"><small>Notes: {{ medicine.notes }}</small></p>
+                                    {% endif %}
+                                    <small class="text-muted">Prescribed on: {{ follow_up.visit_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No prescriptions found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Follow-ups -->
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h4>Follow-ups</h4>
+            </div>
+            <div class="card-body">
+                {% if follow_ups %}
+                    <div class="list-group">
+                        {% for follow_up in follow_ups %}
+                        <div class="list-group-item">
+                            <h6 class="mb-1">Follow-up Notes</h6>
+                            <p class="mb-1">{{ follow_up.notes }}</p>
+                            <small class="text-muted">Date: {{ follow_up.visit_date.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No follow-ups found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if patient.is_premium %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card dashboard-card premium-card">
+            <div class="card-header premium-header">
+                <h4 style="color: #000;"><i class="fas fa-crown text-warning"></i> Premium Features</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="premium-feature-card">
+                            <div class="premium-icon">
+                                <img src="{{ url_for('static', filename='img/premium/ai_chatbot.svg') }}" alt="AI Chatbot" class="img-fluid">
+                            </div>
+                            <h5>Health Chatbot</h5>
+                            <p class="text-muted">Get instant answers to your health questions</p>
+                            <a href="{{ url_for('patient.health_chatbot') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-robot"></i> Start Chat
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="premium-feature-card">
+                            <div class="premium-icon">
+                                <img src="{{ url_for('static', filename='img/premium/report_generation.svg') }}" alt="Health Report" class="img-fluid">
+                            </div>
+                            <h5>Health Report Generator</h5>
+                            <p class="text-muted">Generate comprehensive health reports</p>
+                            <a href="{{ url_for('patient.health_report') }}" class="btn btn-success w-100">
+                                <i class="fas fa-file-medical-alt"></i> Generate Report
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="premium-feature-card">
+                            <div class="premium-icon">
+                                <img src="{{ url_for('static', filename='img/premium/report_history.svg') }}" alt="Health Reports History" class="img-fluid">
+                            </div>
+                            <h5>Health Reports History</h5>
+                            <p class="text-muted">View and manage your health reports</p>
+                            <a href="{{ url_for('patient.list_health_reports') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-history"></i> View Reports
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="premium-feature-card">
+                            <div class="premium-icon">
+                                <img src="{{ url_for('static', filename='img/premium/expiry_detection.svg') }}" alt="Medicine Expiry" class="img-fluid">
+                            </div>
+                            <h5>Medicine Expiry Alerts</h5>
+                            <p class="text-muted">Never miss medicine expiry dates</p>
+                            <a href="{{ url_for('patient.medicine_expiry_alerts') }}" class="btn btn-info w-100">
+                                <i class="fas fa-clock"></i> Check Alerts
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="premium-feature-card">
+                            <div class="premium-icon">
+                                <img src="{{ url_for('static', filename='img/premium/alternative_medicine.svg') }}" alt="Medication Alternatives" class="img-fluid">
+                            </div>
+                            <h5>Medication Alternatives</h5>
+                            <p class="text-muted">Find alternative medicines</p>
+                            <a href="{{ url_for('patient.medication_alternatives') }}" class="btn btn-warning w-100">
+                                <i class="fas fa-pills"></i> Find Alternatives
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card dashboard-card premium-upgrade-card">
+            <div class="card-body text-center">
+                <h4><i class="fas fa-crown text-warning"></i> Upgrade to Premium</h4>
+                <p class="lead">Get access to exclusive health features</p>
+                <div class="row mt-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="premium-feature-preview">
+                            <img src="{{ url_for('static', filename='img/premium/ai_chatbot.svg') }}" alt="AI Chatbot" class="img-fluid">
+                            <p>AI Health Chatbot</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="premium-feature-preview">
+                            <img src="{{ url_for('static', filename='img/premium/report_generation.svg') }}" alt="Health Report" class="img-fluid">
+                            <p>Health Report Generator</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="premium-feature-preview">
+                            <img src="{{ url_for('static', filename='img/premium/expiry_detection.svg') }}" alt="Medicine Expiry" class="img-fluid">
+                            <p>Medicine Expiry Alerts</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="premium-feature-preview">
+                            <img src="{{ url_for('static', filename='img/premium/alternative_medicine.svg') }}" alt="Medication Alternatives" class="img-fluid">
+                            <p>Medication Alternatives</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('patient.upgrade_premium') }}" class="btn btn-warning btn-lg mt-3">
+                    <i class="fas fa-crown"></i> Upgrade Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .premium-card {
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .premium-header {
+        background: linear-gradient(135deg, #f8f9fa, #fff3e0);
+        border-bottom: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    
+    .premium-feature-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+    
+    .premium-feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .premium-icon {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .premium-icon img {
+        max-height: 80px;
+        width: auto;
+    }
+    
+    .premium-upgrade-card {
+        background: linear-gradient(135deg, #f8f9fa, #fff3e0);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .premium-feature-preview {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+    
+    .premium-feature-preview:hover {
+        transform: translateY(-5px);
+    }
+    
+    .premium-feature-preview img {
+        max-height: 60px;
+        width: auto;
+        margin-bottom: 10px;
+    }
+    
+    .premium-feature-preview p {
+        margin-bottom: 0;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %} 

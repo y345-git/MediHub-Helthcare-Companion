@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Health Report - {{ patient.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-medical-alt me-2"></i>Health Report for {{ patient.name }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        This AI-generated health report analyzes your medical history to provide insights about your health condition, improvement trends, potential risks, and recommended tests.
+                    </div>
+
+                    {% if report_data %}
+                        <!-- Report Date -->
+                        <div class="text-muted mb-4">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            Generated on: {{ report_data.date_generated.strftime('%B %d, %Y at %I:%M %p') }}
+                        </div>
+
+                        <!-- Report Summary -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-file-alt me-2"></i>Report Summary
+                            </h5>
+                            <div class="summary p-3 bg-light rounded markdown-content">
+                                {{ report_data.summary|safe }}
+                            </div>
+                        </div>
+
+                        <!-- Patient Overview -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-user-circle me-2"></i>Patient Overview
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> {{ patient.name }}</p>
+                                    <p><strong>Age:</strong> {{ patient.age }}</p>
+                                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Contact:</strong> {{ patient.contact }}</p>
+                                    <p><strong>Address:</strong> {{ patient.address }}</p>
+                                    <p><strong>Doctor:</strong> {{ patient.doctor.name if patient.doctor else 'Not assigned' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Health Condition -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-heartbeat me-2"></i>Current Health Condition
+                            </h5>
+                            <div class="health-condition p-3 bg-light rounded markdown-content">
+                                {{ report_data.current_condition|safe }}
+                            </div>
+                        </div>
+
+                        <!-- Health Improvement Analysis -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-chart-line me-2"></i>Health Improvement Analysis
+                            </h5>
+                            <div class="improvement-analysis p-3 bg-light rounded markdown-content">
+                                {{ report_data.improvement_analysis|safe }}
+                            </div>
+                            
+                            {% if report_data.followup_frequency %}
+                            <div class="mt-3">
+                                <h6>Follow-up Frequency:</h6>
+                                <p>{{ report_data.followup_frequency }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Disease Risk Detection -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Disease Risk Detection
+                            </h5>
+                            <div class="risk-detection p-3 bg-light rounded markdown-content">
+                                {{ report_data.risk_detection|safe }}
+                            </div>
+                        </div>
+
+                        <!-- Recommended Tests -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-vial me-2"></i>Recommended Tests
+                            </h5>
+                            <div class="recommended-tests p-3 bg-light rounded markdown-content">
+                                {{ report_data.recommended_tests|safe }}
+                            </div>
+                        </div>
+
+                        <!-- Prescription History -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-pills me-2"></i>Prescription History
+                            </h5>
+                            <div class="prescription-history p-3 bg-light rounded markdown-content">
+                                {{ report_data.prescription_analysis|safe }}
+                            </div>
+                        </div>
+
+                        <!-- AI Recommendations -->
+                        <div class="section mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="fas fa-robot me-2"></i>AI Health Recommendations
+                            </h5>
+                            <div class="ai-recommendations p-3 bg-light rounded markdown-content">
+                                {{ report_data.ai_recommendations|safe }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="{{ url_for('patient.list_health_reports') }}" class="btn btn-secondary">
+                                <i class="fas fa-history me-2"></i>View All Reports
+                            </a>
+                            <button onclick="window.print()" class="btn btn-info ms-2">
+                                <i class="fas fa-print me-2"></i>Print Report
+                            </button>
+                            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary float-end">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5>Generating your health report...</h5>
+                            <p class="text-muted">This may take a moment as we analyze your medical data.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include marked.js for markdown parsing -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+.section {
+    margin-bottom: 2rem;
+}
+
+.health-condition, .improvement-analysis, .risk-detection, .recommended-tests, .prescription-history, .ai-recommendations, .summary {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+h5 {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+h6 {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Markdown styling */
+.markdown-content {
+    line-height: 1.6;
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+}
+
+.markdown-content strong {
+    font-weight: bold;
+}
+
+.markdown-content em {
+    font-style: italic;
+}
+
+.markdown-content ul, .markdown-content ol {
+    padding-left: 20px;
+    margin-bottom: 1rem;
+}
+
+.markdown-content li {
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content code {
+    background-color: #f1f1f1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.markdown-content pre {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.markdown-content blockquote {
+    border-left: 3px solid #dee2e6;
+    padding-left: 10px;
+    margin-left: 0;
+    color: #6c757d;
+}
+
+/* Print-specific styles */
+@media print {
+    .btn {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+    }
+    
+    .card-header {
+        background-color: #fff !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000 !important;
+    }
+    
+    .alert {
+        display: none !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+    }
+    
+    .health-condition, .improvement-analysis, .risk-detection, .recommended-tests, .prescription-history, .ai-recommendations, .summary {
+        background-color: #fff !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    h5 {
+        color: #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    
+    .markdown-content {
+        page-break-inside: avoid;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+    
+    @page {
+        margin: 2cm;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Process all markdown content
+    const markdownElements = document.querySelectorAll('.markdown-content');
+    markdownElements.forEach(element => {
+        // Get the raw text content
+        const rawText = element.innerHTML;
+        
+        // Parse markdown and set as HTML
+        element.innerHTML = marked.parse(rawText);
+    });
+});
+</script>
+{% endblock %} 

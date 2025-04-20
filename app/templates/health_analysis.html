@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Health Analysis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>AI Health Analysis
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>AI-Generated Health Insights</strong>
+                        <p class="mb-0 mt-2">This analysis is based on your medical history, including prescriptions and follow-up notes.</p>
+                    </div>
+                    
+                    <div class="analysis-content p-4 bg-light rounded markdown-content">
+                        {{ analysis|safe }}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.analysis-content {
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.analysis-content p {
+    margin-bottom: 1rem;
+}
+
+.analysis-content strong {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.analysis-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.analysis-content li {
+    margin-bottom: 0.5rem;
+}
+
+.alert {
+    border-left: 4px solid #0dcaf0;
+}
+
+.alert strong {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" fill="#FFF3E0" />
+    
+    <!-- Medicine Bottle -->
+    <path d="M80 60 L120 60 L110 140 L90 140 Z" 
+          fill="#FFA726" stroke="#F57C00" stroke-width="2" />
+    
+    <!-- Bottle Cap -->
+    <rect x="85" y="50" width="30" height="15" rx="5" 
+          fill="#FFB74D" stroke="#F57C00" stroke-width="2" />
+    
+    <!-- Expiry Date -->
+    <rect x="85" y="100" width="30" height="20" rx="2" 
+          fill="#FFFFFF" stroke="#F57C00" stroke-width="1" />
+    <text x="100" y="115" font-family="Arial" font-size="8" 
+          text-anchor="middle" fill="#F57C00">EXP</text>
+    
+    <!-- Alert Icon -->
+    <circle cx="100" cy="30" r="15" fill="#FF5252" stroke="#D32F2F" stroke-width="2">
+        <animate attributeName="r" values="15;17;15" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <path d="M100 20 L100 35 M100 40 L100 40" 
+          stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+        <animate attributeName="stroke-width" values="2;3;2" dur="2s" repeatCount="indefinite" />
+    </path>
+</svg> 

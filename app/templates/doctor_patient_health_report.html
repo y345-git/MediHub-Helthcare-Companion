@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Health Report - {{ patient.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-medical-alt me-2"></i>Health Report for {{ patient.name }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="report-header mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Date Generated:</strong> {{ report_data.date_generated.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                <p class="mb-1"><strong>Patient Name:</strong> {{ patient.name }}</p>
+                                <p class="mb-1"><strong>Patient ID:</strong> {{ patient.id }}</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <button onclick="window.print()" class="btn btn-info">
+                                    <i class="fas fa-print me-2"></i>Print Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">Current Health Status</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.current_condition|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">Improvement Analysis</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.improvement_analysis|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">Follow-up Recommendations</h5>
+                        <div class="section-content markdown-content">
+                            <p><strong>Recommended Frequency:</strong> {{ report_data.followup_frequency }}</p>
+                            {{ report_data.risk_detection|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">Recommended Tests</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.recommended_tests|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">Prescription Analysis</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.prescription_analysis|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section mb-4">
+                        <h5 class="section-title">AI Recommendations</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.ai_recommendations|safe }}
+                        </div>
+                    </div>
+
+                    <div class="report-section">
+                        <h5 class="section-title">Summary</h5>
+                        <div class="section-content markdown-content">
+                            {{ report_data.summary|safe }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('doctor.view_patient_health_reports', patient_id=patient.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Reports List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.section-title {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.section-content {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.report-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+/* Markdown content styles */
+.markdown-content {
+    line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: #2c3e50;
+}
+
+.markdown-content p {
+    margin-bottom: 1em;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    margin-bottom: 1em;
+    padding-left: 2em;
+}
+
+.markdown-content li {
+    margin-bottom: 0.5em;
+}
+
+.markdown-content blockquote {
+    border-left: 4px solid #3498db;
+    padding-left: 1em;
+    margin-left: 0;
+    margin-bottom: 1em;
+    color: #666;
+}
+
+.markdown-content code {
+    background-color: #e9ecef;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25em;
+    font-family: monospace;
+}
+
+.markdown-content pre {
+    background-color: #e9ecef;
+    padding: 1em;
+    border-radius: 0.25em;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+.markdown-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.markdown-content th,
+.markdown-content td {
+    border: 1px solid #dee2e6;
+    padding: 0.5em;
+}
+
+.markdown-content th {
+    background-color: #f8f9fa;
+}
+
+/* Print-specific styles */
+@media print {
+    .btn {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+    }
+    
+    .card-header {
+        background-color: #fff !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000 !important;
+    }
+    
+    .section-content {
+        background-color: #fff !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .report-header {
+        background-color: #fff !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+    }
+    
+    .markdown-content {
+        page-break-inside: avoid;
+    }
+    
+    @page {
+        margin: 2cm;
+    }
+}
+</style>
+{% endblock %} 
